@@ -7,7 +7,7 @@ int total_blue = 14;
 
 #define STR_MAX 512
 
-int isGameValid(char *input)
+int findGamePower(char *input)
 {
     int red = 0;
     int green = 0;
@@ -17,6 +17,7 @@ int isGameValid(char *input)
     int sub = 0;
     int i = 0;
     int count = 0;
+    int power = 0;
 
     char color_count[STR_MAX];
     int color_index = 0;
@@ -66,23 +67,23 @@ int isGameValid(char *input)
             //printf("color_count[%s] num[%d]\n", color_count, num);
             if(strcmp("red",color) == 0)
             {
-                if(num > total_red)
+                if(num > red)
                 {
-                    return 0;
+                    red = num;
                 }             
             }
             if(strcmp("blue",color) == 0)
             {
-                if(num > total_blue)
+                if(num > blue)
                 {
-                    return 0;
+                    blue = num;
                 }             
             }
             if(strcmp("green",color) == 0)
             {
-                if(num > total_green)
+                if(num > green)
                 {
-                    return 0;
+                    green = num;
                 }             
             }
 #if 0
@@ -100,7 +101,8 @@ int isGameValid(char *input)
 #endif
         
     }
-    return 1;
+    power = red * green * blue;
+    return power;
 }
 
 int main()
@@ -108,10 +110,10 @@ int main()
    FILE *fp;
    char   strInput[STR_MAX];
    int total = 0;
-   int game_num = 1;
+   int power = 0;
   
-   fp = fopen("input_1.txt", "r");
-   //fp = fopen("sample_1.txt", "r");
+   fp = fopen("input_2.txt", "r");
+   //fp = fopen("sample_2.txt", "r");
   
    if(fp == NULL)
    {
@@ -123,11 +125,8 @@ int main()
    while (fgets(strInput, STR_MAX, fp) != NULL)
    {
     //printf("%s", strInput);
-    if(isGameValid(strInput))
-    {
-        total += game_num;
-    } 
-    game_num++;
+    power = findGamePower(strInput);
+    total += power;
    }
    printf("Total : %d\n", total);
 

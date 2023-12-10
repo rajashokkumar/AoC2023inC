@@ -242,52 +242,38 @@ long long int findIndexFromMapping(int index, long long int mappingIndex)
     }
     return nextMapIndex;
 }
-void findSeedLocation()
+long long int findLocationOfSeed(long long int seedl)
+{
+    long long int location = 0;
+    int index = 0;
+    long long int mappingIndex;
+
+    mappingIndex = seedl;
+    for(index=0; index < MAP_LEN; index++)
+    {
+        mappingIndex = findIndexFromMapping(index, mappingIndex);
+        //printf("index[%lld] mappingIndex[%lld]\n", index, mappingIndex);
+    }
+
+    location = mappingIndex;
+    return location;
+}
+void fillSeedLocation()
 {
     LIST_SEED *seed_temp;
     int index = 0;
     long long int mappingIndex;
-    long long int mappingIndexRange;
-    long long int least = -1;
-    long long int seed_start;
-    long long int seed_end;
+    long long int location;
 
     seed_temp = seed;
 
     while(seed_temp)
     {
-        mappingIndexRange = seed_temp->seed;
-        seed_start = seed_temp->seed;
-
-        seed_temp = seed_temp->next;
-        if(!seed_temp)
-        {
-            printf("No Range found\n");
-            break;
-        }
-        seed_end = seed_temp->seed+seed_start;
-
-        for(mappingIndexRange = seed_start; mappingIndexRange < seed_end; mappingIndexRange++)
-        {
-            mappingIndex = mappingIndexRange;
-        for(index=0; index < MAP_LEN; index++)
-        {
-            mappingIndex = findIndexFromMapping(index, mappingIndex);
-            //printf("index[%lld] mappingIndex[%lld]\n", index, mappingIndex);
-        }
-        if(least == -1)
-        {
-            least = mappingIndex;
-        }
-        if(least > mappingIndex)
-        {
-            least = mappingIndex;
-        }
-        }
-        //seed_temp->location = mappingIndex;
+        location = findLocationOfSeed(seed_temp->seed);
+        seed_temp->location = location;
         seed_temp = seed_temp->next;
     }
-    printf("Closest Location : %lld\n", least);
+    return;
 }
 
 long long int findCloseSeedLocation()
@@ -307,6 +293,39 @@ long long int findCloseSeedLocation()
         }
         seed_temp = seed_temp->next;
     }
+    return least;
+}
+
+long long int findCloseSeedRangeLocation()
+{
+    long long int least = -1;
+    LIST_SEED *seed_temp;
+    long long int start = 0;
+    long long int end = 0;
+    long long int location = 0;
+
+    seed_temp = seed;
+
+    while(seed_temp)
+    {
+        start = seed_temp -> seed;
+        seed_temp = seed_temp ->next;
+        end = start + seed_temp->seed;
+        for(start; start < end; start++)
+        {
+            location = findLocationOfSeed(start);
+            if(least == -1)
+            {
+                least = location;
+            }
+            if(least > location)
+            {
+                least = location;
+            }
+        }
+        seed_temp = seed_temp ->next;
+    }
+
     return least;
 }
 
@@ -355,11 +374,11 @@ int main(int argc, char * argv[])
    
     //printMapList();
     //printSeed();
-    findSeedLocation();
+    fillSeedLocation();
     //printSeed();
 
-    //closest = findCloseSeedLocation();
-    //printf("Closest Location : %lld\n", closest);
+    closest = findCloseSeedRangeLocation();
+    printf("Closest Location : %lld\n", closest);
 
 
 

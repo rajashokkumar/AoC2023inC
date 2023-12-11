@@ -9,6 +9,8 @@ int mapIndex = -1;
 
 typedef unsigned long long int uint32;
 
+//typedef double uint32;
+
 
 typedef struct _list_seed
 {
@@ -223,26 +225,27 @@ uint32 findIndexFromMapping(int index, uint32 mappingIndex)
     LIST_MAP *temp;
     uint32 nextMapIndex = 0;
     uint32 difference = 0;
-    int found = 0;
 
     temp = mapList[index];
-
+    //printf("index[%d] start_mappingIndex[%lld]\n", index, mappingIndex);
     while(temp)
     {
-        if((mappingIndex >= temp->cur) && (mappingIndex <= (temp->cur+temp->range)))
+        //printf("index:%d mappingIndex:%lld temp->cur:%lld temp->range:%lld difference:%lld nextMapIndex:%lld\n",
+        //    index, mappingIndex,temp->cur, temp->range,difference , nextMapIndex);
+        if((mappingIndex >= temp->cur) && (mappingIndex < (temp->cur+temp->range)))
         {
-            found = 1;
             difference = mappingIndex - temp->cur;
             nextMapIndex = difference + temp->next;
-            break;
+            // printf("index:%d mappingIndex:%lld temp->cur:%lld temp->range:%lld difference:%lld nextMapIndex:%lld\n",
+            //index, mappingIndex,temp->cur, temp->range,difference , nextMapIndex);
+            return nextMapIndex;
         }
         temp = temp->nextPtr;
     }
-    if(!found)
-    {
-        //printf("Range not found, so just keeping same index\n");
-        nextMapIndex = mappingIndex;
-    }
+
+    //printf("Range not found, so just keeping same index\n");
+    nextMapIndex = mappingIndex;
+
     return nextMapIndex;
 }
 uint32 findLocationOfSeed(uint32 seedl)
@@ -254,8 +257,9 @@ uint32 findLocationOfSeed(uint32 seedl)
     mappingIndex = seedl;
     for(index=0; index < MAP_LEN; index++)
     {
+        //printf("index[%d] cur_mappingIndex[%lld]\n", index, mappingIndex);
         mappingIndex = findIndexFromMapping(index, mappingIndex);
-        //printf("index[%lld] mappingIndex[%lld]\n", index, mappingIndex);
+        //printf("index[%d] next_mappingIndex[%lld]\n", index, mappingIndex);
     }
 
     location = mappingIndex;
@@ -382,9 +386,6 @@ int main(int argc, char * argv[])
 
     closest = findCloseSeedRangeLocation();
     printf("Closest Location : %lld\n", closest);
-
-
-
 
     cleanSeed();
     cleanMapList();

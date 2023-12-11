@@ -7,10 +7,13 @@
 int mapIndex = -1;
 #define MAP_LEN  7
 
+typedef unsigned long long int uint32;
+
+
 typedef struct _list_seed
 {
-    long long int seed;
-    long long int location;
+    uint32 seed;
+    uint32 location;
     struct _list_seed *next;
 }LIST_SEED;
 
@@ -18,9 +21,9 @@ LIST_SEED *seed = NULL;
 
 typedef struct _list_map
 {
-    long long int next;
-    long long int cur;
-    long long int range;
+    uint32 next;
+    uint32 cur;
+    uint32 range;
     struct _list_map *nextPtr;
 }LIST_MAP;
 
@@ -34,7 +37,7 @@ char *map[] = {"seed-to-soil map:",
 
 LIST_MAP *mapList[MAP_LEN];
 
-void addSeed(long long int num)
+void addSeed(uint32 num)
 {
     LIST_SEED *new = NULL;
     LIST_SEED *temp = NULL;
@@ -85,7 +88,7 @@ void printSeed()
         temp= temp->next;
     }
 }
-void addMapList(long long int next, long long int cur, long long int range)
+void addMapList(uint32 next, uint32 cur, uint32 range)
 {
     LIST_MAP *new = NULL;
     LIST_MAP *temp = NULL;
@@ -137,7 +140,7 @@ void cleanMapList()
 {
     LIST_MAP *temp = NULL;
     LIST_MAP *prev;
-    int i = 0;
+    int  i = 0;
 
     for(i=0; i < MAP_LEN; i++)
     {
@@ -180,11 +183,11 @@ int findIndexofMap(char *line)
 void createEntry(char *input)
 {
     int index = 0;
-    long long int next;
-    long long int cur;
-    long long int range;
+    uint32 next;
+    uint32 cur;
+    uint32 range;
     char *token;
-    long long int seed = 0;
+    uint32 seed = 0;
 
     if(isMap(input))
     {
@@ -215,11 +218,11 @@ void createEntry(char *input)
     return;
 }
 
-long long int findIndexFromMapping(int index, long long int mappingIndex)
+uint32 findIndexFromMapping(int index, uint32 mappingIndex)
 {
     LIST_MAP *temp;
-    long long int nextMapIndex = 0;
-    long long int difference = 0;
+    uint32 nextMapIndex = 0;
+    uint32 difference = 0;
     int found = 0;
 
     temp = mapList[index];
@@ -242,11 +245,11 @@ long long int findIndexFromMapping(int index, long long int mappingIndex)
     }
     return nextMapIndex;
 }
-long long int findLocationOfSeed(long long int seedl)
+uint32 findLocationOfSeed(uint32 seedl)
 {
-    long long int location = 0;
+    uint32 location = 0;
     int index = 0;
-    long long int mappingIndex;
+    uint32 mappingIndex;
 
     mappingIndex = seedl;
     for(index=0; index < MAP_LEN; index++)
@@ -262,8 +265,8 @@ void fillSeedLocation()
 {
     LIST_SEED *seed_temp;
     int index = 0;
-    long long int mappingIndex;
-    long long int location;
+    uint32 mappingIndex;
+    uint32 location;
 
     seed_temp = seed;
 
@@ -276,9 +279,9 @@ void fillSeedLocation()
     return;
 }
 
-long long int findCloseSeedLocation()
+uint32 findCloseSeedLocation()
 {
-    long long int least = -1;
+    uint32 least = -1;
     LIST_SEED *seed_temp;
 
     seed_temp = seed;
@@ -296,13 +299,13 @@ long long int findCloseSeedLocation()
     return least;
 }
 
-long long int findCloseSeedRangeLocation()
+uint32 findCloseSeedRangeLocation()
 {
-    long long int least = -1;
+    uint32 least = -1;
     LIST_SEED *seed_temp;
-    long long int start = 0;
-    long long int end = 0;
-    long long int location = 0;
+    uint32 start = 0;
+    uint32 end = 0;
+    uint32 location = 0;
 
     seed_temp = seed;
 
@@ -335,7 +338,7 @@ int main(int argc, char * argv[])
    char   strInput[STR_MAX];
    int len = 0;
    int row = 0;
-   long long int closest = 0;
+   uint32 closest = 0;
 
    if(argc < 2)
    {
@@ -374,7 +377,7 @@ int main(int argc, char * argv[])
    
     //printMapList();
     //printSeed();
-    fillSeedLocation();
+    //fillSeedLocation();
     //printSeed();
 
     closest = findCloseSeedRangeLocation();

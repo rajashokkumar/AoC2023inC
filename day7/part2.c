@@ -46,11 +46,11 @@ int findHand(char *cards)
     int cardCount[MAX_CARDS];
     int i = 0;
     int index = 0;
-    int threePair = 0;
-    int twoPair = 0;
     int  numberOfJoker  = 0;
-    int jokerUsed = 0;
-
+    int fiveMatch = 0;
+    int fourMatch = 0;
+    int threeMatch  = 0;
+    int twoMatch = 0;
 
     for(i=0; i< MAX_CARDS;i++)
     {
@@ -63,57 +63,138 @@ int findHand(char *cards)
         cardCount[index]++;
     }
 
-
-
-
     numberOfJoker = cardCount[0];
 
  //   printf("Number of jokers:%d\n", numberOfJoker);
- 
+
     for(i=1; i< MAX_CARDS;i++)
     {
-        if((cardCount[0] == 5) || (cardCount[i] == 5) || ((cardCount[i] == 4) && (cardCount[0] == 1)) || ((cardCount[i] == 3) && (cardCount[0] == 2)) || ((cardCount[i] == 2) && (cardCount[0] == 3)) | ((cardCount[i] == 1) && (cardCount[0] == 4)))
+        if(cardCount[i] == 5)
         {
-            hand =  6;//Five of kind  - All five match
-            return hand;
+            fiveMatch++;
         }
-        if( (cardCount[i] == 4) || ((cardCount[i] == 3) && (cardCount[0] == 1)) || ((cardCount[i] == 2) && (cardCount[0] == 2)) || ((cardCount[i] == 1) && (cardCount[0] == 3)) )
+        if(cardCount[i] == 4)
         {
-            hand =  5; //Four of kind - Four match
-            return hand;
+            fourMatch++;
         }
-        //if((cardCount[i] == 3) || ((cardCount[i] == 2) && (cardCount[0] == 1)) || ((cardCount[i] == 1) && (cardCount[0] == 2)))
         if(cardCount[i] == 3)
         {
-            threePair++;
+            threeMatch++;
         }
-        //if((cardCount[i] == 2) || ((cardCount[i] == 1) && (cardCount[0] == 1)))
         if(cardCount[i] == 2)
         {
-            twoPair++;
-        }
-    }
-    if ((threePair))
-    {
-        if(twoPair)
-        {
-            hand = 4;
-        } else {
-            hand = 3; // Three of kind - one 3 match
-        }
-    } else if(twoPair)
-    {
-        if(twoPair == 2)
-        {
-            hand = 2;// Two pair - two 2 matches
-        } else {
-            hand = 1; //One pair - one  2 match
+            twoMatch++;
         }
     }
 
-    printf("cards[%s] hands[%d] jokerUsed:%d threepair:%d twopair:%d noofjoker:%d\n",cards, hand, jokerUsed, threePair,twoPair, numberOfJoker);
+    if (fiveMatch)
+    {
+        hand =  6;//Five of kind  - All five match
+         return hand;
+    }
 
-    return hand; //High card, all different cards
+    if(fourMatch)
+    {
+        if(numberOfJoker == 1)
+        {
+             hand =  6;//Five of kind  - All five match
+            return hand;
+        } else {
+            hand =  5;////Four of kind - Four match
+            return hand;
+        }
+    }
+
+    if(threeMatch)
+    {
+        if(numberOfJoker == 2)
+        {
+             hand =  6;//Five of kind  - All five match
+            return hand;
+        }
+        if(numberOfJoker == 1)
+        {
+             hand =  5; //Four of kind - Four match
+            return hand;
+        }
+        if(numberOfJoker == 0)
+        {
+            if(twoMatch)
+            {
+                 hand =  4;////Three of kind - 1 , Three match and 1, two match
+                return hand;             
+            } else {
+                 hand =  3;////Three of kind - 1 , Three match and no two match
+                return hand;                  
+            }
+        }
+    }
+
+    if(twoMatch)
+    {
+        if(numberOfJoker == 3)
+        {
+             hand =  6;//Five of kind  - All five match
+            return hand;
+        }
+        if(numberOfJoker == 2)
+        {
+             hand =  5;////Four of kind - Four match
+            return hand;
+        }
+        if(numberOfJoker == 1)
+        {
+            if(twoMatch == 2)
+            {
+                 hand =  4;////Three of kind - 1 , Three match and 1, two match
+                return hand;             
+            } else {
+                 hand =  3;////Three of kind - 1 , Three match and no two match
+                return hand;                  
+            }
+        }
+        if(numberOfJoker == 0)
+        {
+            if(twoMatch == 2 ) 
+            {
+                hand = 2;// Two pair - two 2 matches
+                return hand;             
+            } else {
+                 hand =  1; //One pair - one  2 match
+                return hand;                  
+            }
+        }
+    }
+
+    if(numberOfJoker == 5)
+    {
+         hand =  6;//Five of kind  - All five match
+         return hand;
+    }
+
+    if(numberOfJoker == 4)
+    {
+         hand =  6; //Five of kind  - All five match
+         return hand;
+    }
+
+    if(numberOfJoker == 3)
+    {
+         hand =  5;  //Four of kind - Four match 
+         return hand;
+    }
+    if(numberOfJoker == 2)
+    {
+         hand =  3;////Three of kind - 1 , Three match and no two match 
+         return hand;
+    }
+
+    if(numberOfJoker == 1)
+    {
+         hand =  1; //One pair - one  2 match
+         return hand;
+    }
+     return hand; //High card, all different cards
 }
 
 void addEntry(char *cards, int bid)

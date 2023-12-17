@@ -5,7 +5,7 @@
 #define STR_MAX 256
 #define ARRAY_MAX 2
 
-typedef double  uint32;
+typedef unsigned long long int  uint32;
 
 
 uint32 time[ARRAY_MAX];
@@ -73,10 +73,10 @@ void parseData(char *input)
 void printMap()
 {
     int i = 0;
-    printf(" Time  |  Distance  |  Win\n");
+    printf(" Time      |      Distance       |  Win\n");
     for(i=0; i < maxLen; i++)
     {
-        printf("%5lf %10llf %7llf\n",time[i], distance[i], win[i]);
+        printf("%10lld %20lld %10lld\n",time[i], distance[i], win[i]);
 
     }
 }
@@ -162,6 +162,6 @@ int main(int argc, char * argv[])
    findPossibleWins();
    //printMap();
    totalwin = findWaysToWin();
-   printf("Total Ways to win: %.0llf", totalwin);
+   printf("Total Ways to win: %lld", totalwin);
     return 0;
 }

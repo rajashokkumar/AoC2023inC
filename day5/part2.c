@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <pthread.h>
+
 
 #define STR_MAX 256
 //#define STR_MAX 50
@@ -8,6 +10,8 @@ int mapIndex = -1;
 #define MAP_LEN  7
 
 typedef unsigned long long int uint32;
+
+uint32 closest = 0xffffffff;
 
 //typedef double uint32;
 
@@ -248,7 +252,8 @@ uint32 findIndexFromMapping(int index, uint32 mappingIndex)
 
     return nextMapIndex;
 }
-uint32 findLocationOfSeed(uint32 seedl)
+
+uint32 findLocationOfSeed1(uint32 seedl)
 {
     uint32 location = 0;
     int index = 0;
@@ -265,6 +270,31 @@ uint32 findLocationOfSeed(uint32 seedl)
     location = mappingIndex;
     return location;
 }
+
+void *findLocationOfSeed(void *args)
+{
+    uint32 location = 0;
+    int index = 0;
+    uint32 mappingIndex;
+    uint32 *ptr = (uint32 *)args;
+
+    mappingIndex = *ptr;
+    for(index=0; index < MAP_LEN; index++)
+    {
+        //printf("index[%d] cur_mappingIndex[%lld]\n", index, mappingIndex);
+        mappingIndex = findIndexFromMapping(index, mappingIndex);
+        //printf("index[%d] next_mappingIndex[%lld]\n", index, mappingIndex);
+    }
+
+    location = mappingIndex;
+    if(location < closest)
+    {
+        closest = location;
+    }
+
+    return NULL;
+}
+
 void fillSeedLocation()
 {
     LIST_SEED *seed_temp;
@@ -276,7 +306,7 @@ void fillSeedLocation()
 
     while(seed_temp)
     {
-        location = findLocationOfSeed(seed_temp->seed);
+        location = findLocationOfSeed1(seed_temp->seed);
         seed_temp->location = location;
         seed_temp = seed_temp->next;
     }
@@ -303,6 +333,7 @@ uint32 findCloseSeedLocation()
     return least;
 }
 
+#if 0
 uint32 findCloseSeedRangeLocation()
 {
     uint32 least = -1;
@@ -335,7 +366,36 @@ uint32 findCloseSeedRangeLocation()
 
     return least;
 }
+#else
 
+uint32 findCloseSeedRangeLocation()
+{
+    uint32 least = -1;
+    LIST_SEED *seed_temp;
+    uint32 start = 0;
+    uint32 end = 0;
+    uint32 location = 0;
+    pthread_t tid;
+
+
+    seed_temp = seed;
+
+    while(seed_temp)
+    {
+        start = seed_temp -> seed;
+        seed_temp = seed_temp ->next;
+        end = start + seed_temp->seed;
+        for(start; start < end; start++)
+        {
+            pthread_create(&tid, NULL, findLocationOfSeed, (void *)&start);
+        }
+        seed_temp = seed_temp ->next;
+    }
+
+    return closest;
+}
+
+#endif
 int main(int argc, char * argv[])
 {
    FILE *fp;
@@ -384,9 +444,10 @@ int main(int argc, char * argv[])
     //fillSeedLocation();
     //printSeed();
 
+ 
     closest = findCloseSeedRangeLocation();
     printf("Closest Location : %lld\n", closest);
-
+   
     cleanSeed();
     cleanMapList();
    return 0;
